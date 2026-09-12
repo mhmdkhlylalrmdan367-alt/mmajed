@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مجد علي الرمضان | مهندس مدني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  /* ===== المتغيرات - الوضع النهاري ===== */
+  :root {
+    --primary: #1F3A5F;
+    --primary-light: #2E5077;
+    --accent: #3B82F6;
+    --accent-soft: #DBEAFE;
+    --accent-hover: #2563EB;
+    --text: #111827;
+    --text-soft: #374151;
+    --muted: #6B7280;
+    --bg: #F3F4F6;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --shadow: 0 4px 20px rgba(31, 58, 95, 0.08);
+    --shadow-lg: 0 10px 40px rgba(31, 58, 95, 0.15);
+    --gradient: linear-gradient(135deg, #1F3A5F 0%, #2E5077 50%, #3B82F6 100%);
+    --tag-bg: #DBEAFE;
+    --tag-text: #1F3A5F;
+    --exp-bg: #F9FAFB;
+  }
+
+  /* ===== الوضع الليلي ===== */
+  body.dark {
+    --primary: #60A5FA;
+    --primary-light: #3B82F6;
+    --accent: #3B82F6;
+    --accent-soft: #1E3A8A;
+    --accent-hover: #60A5FA;
+    --text: #F1F5F9;
+    --text-soft: #CBD5E1;
+    --muted: #94A3B8;
+    --bg: #0F172A;
+    --card: #1E293B;
+    --border: #334155;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --gradient: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #1E3A8A 100%);
+    --tag-bg: #1E3A8A;
+    --tag-text: #DBEAFE;
+    --exp-bg: #0F172A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cairo', 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s ease, color 0.4s ease;
+    padding-bottom: 80px;
+  }
+
+  /* ===== أزرار عائمة ===== */
+  .floating-actions {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 999;
+  }
+
+  .fab {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: white;
+    background: var(--primary);
+    box-shadow: 0 6px 20px rgba(31, 58, 95, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+
+  .fab:hover {
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 10px 28px rgba(31, 58, 95, 0.45);
+  }
+
+  .fab:active { transform: scale(0.95); }
+
+  .fab.pdf { background: #DC2626; }
+  .fab.pdf:hover { background: #EF4444; }
+
+  .fab.theme { background: #F59E0B; }
+  .fab.theme:hover { background: #FBBF24; }
+
+  .fab::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 110%;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: 'Cairo', sans-serif;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  .fab:hover::after { opacity: 1; }
+
+  /* ===== الحاوية ===== */
+  .container {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 20px 16px;
+  }
+
+  /* ===== الهيدر ===== */
+  header {
+    background: var(--gradient);
+    color: white;
+    border-radius: 24px;
+    padding: 48px 32px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 350px;
+    height: 350px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60%;
+    left: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+  }
+
+  /* ===== الصورة الشخصية ===== */
+  .avatar-wrapper {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 20px;
+    z-index: 2;
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    font-weight: 800;
+    color: var(--primary);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    border: 5px solid rgba(255, 255, 255, 0.4);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s, border-color 0.3s;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .avatar:hover {
+    transform: scale(1.04);
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .avatar-hint {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent);
+    color: white;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+    font-weight: 600;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    z-index: 3;
+  }
+
+  #avatarInput { display: none; }
+
+  header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 2;
+    letter-spacing: -0.5px;
+  }
+
+  header .role {
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 0.92;
+    margin-bottom: 26px;
+    position: relative;
+    z-index: 2;
+  }
+
+  header .role::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.5);
+    margin: 12px auto 0;
+    border-radius: 3px;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+    max-width: 720px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .contact-item {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 11px 14px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .contact-item:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .contact-item .icon { font-size: 16px; }
+
+  /* ===== الأقسام ===== */
+  section {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 28px 26px;
+    margin-top: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: background 0.4s, border-color 0.4s, box-shadow 0.3s;
+  }
+
+  section:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--border);
+    transition: color 0.4s, border-color 0.4s;
+  }
+
+  .section-title .icon-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  /* ===== التعليم ===== */
+  .edu-item {
+    border-right: 3px solid var(--accent);
+    padding-right: 18px;
+    position: relative;
+  }
+
+  .edu-item::before {
+    content: '';
+    position: absolute;
+    right: -8.5px;
+    top: 8px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid var(--card);
+    box-shadow: 0 0 0 2px var(--accent);
+    transition: background 0.4s, border-color 0.4s;
+  }
+
+  .edu-item h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    transition: color 0.4s;
+  }
+
+  .edu-item .meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    transition: color 0.4s;
+  }
+
+  .badge {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-block;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  .edu-item ul { list-style: none; margin-top: 10px; }
+
+  .edu-item ul li {
+    font-size: 14px;
+    color: var(--text-soft);
+    padding-right: 20px;
+    position: relative;
+    margin-bottom: 5px;
+    transition: color 0.4s;
+  }
+
+  .edu-item ul li::before {
+    content: '▸';
+    position: absolute;
+    right: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ===== النبذة ===== */
+  .about-text {
+    font-size: 15px;
+    color: var(--text-soft);
+    line-height: 1.9;
+    transition: color 0.4s;
+  }
+
+  /* ===== المهارات ===== */
+  .skills-group { margin-bottom: 20px; }
+  .skills-group:last-child { margin-bottom: 0; }
+
+  .skills-group h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.4s;
+  }
+
+  .skills-group h4::before {
+    content: '';
+    width: 4px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 4px;
+  }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .tag {
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 7px 16px;
+    border-radius: 22px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.25s;
+    border: 1px solid transparent;
+    cursor: default;
+  }
+
+  .tag:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+
+  /* ===== الخبرات ===== */
+  .exp-item {
+    padding: 18px;
+    background: var(--exp-bg);
+    border-radius: 14px;
+    margin-bottom: 14px;
+    border-right: 3px solid var(--accent);
+    transition: all 0.3s;
+  }
+
+  .exp-item:hover {
+    transform: translateX(-4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  .exp-item:last-child { margin-bottom: 0; }
+
+  .exp-item h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 6px;
+    transition: color 0.4s;
+  }
+
+  .exp-item .company {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    transition: color 0.4s;
+  }
+
+  .exp-item ul { list-style: none; }
+
+  .exp-item ul li {
+    font-size: 14px;
+    padding-right: 22px;
+    position: relative;
+    margin-bottom: 5px;
+    color: var(--text-soft);
+    transition: color 0.4s;
+  }
+
+  .exp-item ul li::before {
+    content: '✓';
+    position: absolute;
+    right: 0;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  /* ===== اللغات ===== */
+  .lang-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    background: var(--exp-bg);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    transition: background 0.4s;
+  }
+
+  .lang-item:last-child { margin-bottom: 0; }
+
+  .lang-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.4s;
+  }
+
+  .lang-level { display: flex; gap: 5px; align-items: center; }
+
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+
+  .dot.active { background: var(--accent); }
+
+  /* ===== الفوتر ===== */
+  footer {
+    text-align: center;
+    padding: 30px 16px;
+    color: var(--muted);
+    font-size: 13px;
+    transition: color 0.4s;
+  }
+
+  footer strong { color: var(--primary); transition: color 0.4s; }
+
+  /* ===== استجابة الجوال ===== */
+  @media (max-width: 640px) {
+    .container { padding: 14px 12px; }
+    header { padding: 36px 20px 32px; border-radius: 20px; }
+    header h1 { font-size: 24px; }
+    .avatar-wrapper { width: 110px; height: 110px; }
+    .avatar { font-size: 42px; }
+    section { padding: 22px 18px; border-radius: 18px; }
+    .section-title { font-size: 17px; }
+    .contact-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .contact-item { font-size: 12px; padding: 9px 10px; }
+    .exp-item { padding: 14px; }
+    .floating-actions { bottom: 16px; left: 16px; gap: 10px; }
+    .fab { width: 48px; height: 48px; font-size: 19px; }
+    .fab::after { display: none; }
+  }
+
+  @media (max-width: 380px) {
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== الطباعة ===== */
+  @media print {
+    body { background: white !important; padding-bottom: 0; }
+    .floating-actions { display: none !important; }
+    header { box-shadow: none !important; }
+    section { box-shadow: none !important; border: 1px solid #ddd !important; page-break-inside: avoid; }
+    .exp-item:hover { transform: none; }
+  }
+
+  /* ===== تأثير عند توليد PDF ===== */
+  .pdf-generating .floating-actions,
+  .pdf-generating .avatar-hint { display: none !important; }
+  .pdf-generating body { padding: 0 !important; }
+</style>
+</head>
+<body>
+
+<div class="container" id="cvContent">
+
+  <!-- ===== الهيدر ===== -->
+  <header>
+    <div class="avatar-wrapper">
+      <div class="avatar" id="avatar" onclick="document.getElementById('avatarInput').click()">م</div>
+      <div class="avatar-hint">📷 اضغط لتغيير الصورة</div>
+      <input type="file" id="avatarInput" accept="image/*">
+    </div>
+    <h1>مجد علي الرمضان</h1>
+    <p class="role">طالب هندسة مدنية – السنة الرابعة</p>
+
+    <div class="contact-grid">
+       <a href="tel:+963954002938" class="contact-item">
+    <span class="icon">📞</span>
+    <span>0954002938</span>
+  </a>
+   
+      <div class="contact-item">
+        <span class="icon">📍</span>
+        <span>ادلب , التح</span>
+      </div>
+     
+    </div>
+  </header>
+
+  <!-- ===== نبذة ===== -->
+  <section>
+    <div class="section-title">
+      <span class="icon-badge">👤</span>
+      نبذة مختصرة
+    </div>
+    <p class="about-text">
+      طالب هندسة مدنية في السنة الرابعة، شغوف بالتصميم الإنشائي وإدارة المشاريع.
+      أمتلك أساسًا قويًا في التحليل الإنشائي والبرامج الهندسية، وأسعى لاكتساب
+      خبرة عملية في مشاريع البناء والبنية التحتية.
+    </p>
+  </section>
+
+  <!-- ===== التعليم ===== -->
+  <section>
+    <div class="section-title">
+      <span class="icon-badge">🎓</span>
+      التعليم
+    </div>
+    <div class="edu-item">
+      <h3>بكالوريوس الهندسة المدنية</h3>
+      <div class="meta">
+        <span class="badge">2022 – 2026</span>
+       جامعة حلب 
+      </div>
+      <ul>
+        <li>المعدل التراكمي: %71 </li>
+        <li>مقررات بارزة: التحليل الإنشائي، الخرسانة المسلحة، ميكانيكا الموائع، إدارة المشاريع</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== المهارات ===== -->
+  <section>
+    <div class="section-title">
+      <span class="icon-badge">🛠️</span>
+      المهارات
+    </div>
+
+    <div class="skills-group">
+      <h4>البرامج الهندسية</h4>
+      <div class="tags">
+        <span class="tag">AutoCAD</span>
+        <span class="tag">Revit</span>
+        <span class="tag">SAP2000</span>
+        <span class="tag">ETABS</span>
+        <span class="tag">Microsoft Project</span>
+      </div>
+    </div>
+
+    <div class="skills-group">
+      <h4>المهارات الهندسية</h4>
+      <div class="tags">
+        <span class="tag">التحليل الإنشائي</span>
+        <span class="tag">حساب الكميات</span>
+        <span class="tag">قراءة المخططات</span>
+        <span class="tag">إدارة المشاريع</span>
+      </div>
+    </div>
+
+    <div class="skills-group">
+      <h4>المهارات الشخصية</h4>
+      <div class="tags">
+        <span class="tag">العمل الجماعي</span>
+        <span class="tag">حل المشكلات</span>
+        <span class="tag">إدارة الوقت</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== الخبرات ===== -->
+  <section>
+    <div class="section-title">
+      <span class="icon-badge">💼</span>
+      الخبرات العملية
+    </div>
+
+    <div class="exp-item">
+      <h3>متدرب هندسي</h3>
+      <div class="company">
+       
+        <span class="badge">صيف 2025</span>
+      </div>
+      <ul>
+        <li>المشاركة في مراجعة المخططات الإنشائية لمشروع سكني.</li>
+        <li>إعداد جداول الكميات باستخدام Excel وAutoCAD.</li>
+      </ul>
+    </div>
+
+    <div class="exp-item">
+      <h3>متدرب ميداني</h3>
+      <div class="company">
+       
+        <span class="badge">صيف 2025</span>
+      </div>
+      <ul>
+        <li>متابعة مراحل صب الخرسانة في موقع تنفيذي.</li>
+        <li>توثيق الملاحظات الفنية ورفع تقارير يومية.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== المشاريع ===== -->
+  <section>
+    <div class="section-title">
+      <span class="icon-badge">📐</span>
+      المشاريع الأكاديمية
+    </div>
+
+    <div class="exp-item">
+      <h3>تصميم جسر خرساني</h3>
+      <div class="company">
+        <span>مشروع مادة الخرسانة المسلحة</span>
+        <span class="badge">2025</span>
+      </div>
+      <ul>
+        <li>تحليل الأحمال وتصميم المقاطع باستخدام SAP2000.</li>
+        <li>إعداد المخططات التنفيذية على AutoCAD.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== اللغات ===== -->
+  <section>
+    <div class="section-title">
+      <span class="icon-badge">🌍</span>
+      اللغات
+    </div>
+
+    <div class="lang-item">
+      <span class="lang-name">العربية</span>
+      <div class="lang-level">
+        <span class="dot active"></span>
+        <span class="dot active"></span>
+        <span class="dot active"></span>
+        <span class="dot active"></span>
+        <span class="dot active"></span>
+      </div>
+    </div>
+
+    <div class="lang-item">
+      <span class="lang-name">الإنجليزية</span>
+      <div class="lang-level">
+        <span class="dot active"></span>
+        <span class="dot active"></span>
+        <span class="dot active"></span>
+        <span class="dot active"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== الفوتر ===== -->
+  <footer>
+    © 2026 <strong>مجد علي الرمضان</strong> — جميع الحقوق محفوظة
+  </footer>
+
+</div>
+
+<!-- ===== الأزرار العائمة ===== -->
+<div class="floating-actions">
+  <button class="fab pdf" id="pdfBtn" data-tooltip="تحميل PDF">📥</button>
+  <button class="fab theme" id="themeBtn" data-tooltip="الوضع الليلي">🌙</button>
+</div>
+
+<script>
+  /* ===================== الوضع الليلي ===================== */
+  const themeBtn = document.getElementById('themeBtn');
+  const body = document.body;
+
+  // استرجاع التفضيل المحفوظ
+  const savedTheme = localStorage.getItem('cv-theme');
+  if (savedTheme === 'dark') {
+    body.classList.add('dark');
+    themeBtn.textContent = '☀️';
+    themeBtn.dataset.tooltip = 'الوضع النهاري';
+  }
+
+  themeBtn.addEventListener('click', () => {
+    body.classList.toggle('dark');
+    const isDark = body.classList.contains('dark');
+    themeBtn.textContent = isDark ? '☀️' : '🌙';
+    themeBtn.dataset.tooltip = isDark ? 'الوضع النهاري' : 'الوضع الليلي';
+    localStorage.setItem('cv-theme', isDark ? 'dark' : 'light');
+  });
+
+  /* ===================== رفع الصورة الشخصية ===================== */
+  const avatarInput = document.getElementById('avatarInput');
+  const avatar = document.getElementById('avatar');
+
+  // استرجاع الصورة المحفوظة
+  const savedAvatar = localStorage.getItem('cv-avatar');
+  if (savedAvatar) {
+    avatar.style.backgroundImage = `url(${savedAvatar})`;
+    avatar.textContent = '';
+  }
+
+  avatarInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('⚠️ حجم الصورة كبير. يرجى اختيار صورة أقل من 2 ميجابايت.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target.result;
+      avatar.style.backgroundImage = `url(${dataUrl})`;
+      avatar.textContent = '';
+      try {
+        localStorage.setItem('cv-avatar', dataUrl);
+      } catch (err) {
+        console.warn('لم يتم حفظ الصورة محليًا (الحجم كبير).');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  /* ===================== تحميل PDF ===================== */
+  const pdfBtn = document.getElementById('pdfBtn');
+
+  pdfBtn.addEventListener('click', async () => {
+    const element = document.getElementById('cvContent');
+    const isDark = body.classList.contains('dark');
+
+    // إظهار مؤشر التحميل
+    pdfBtn.textContent = '⏳';
+    pdfBtn.disabled = true;
+
+    // إخفاء الأزرار العائمة والتنبيهات مؤقتًا
+    document.querySelectorAll('.floating-actions, .avatar-hint').forEach(el => {
+      el.style.display = 'none';
+    });
+
+    // إذا كان الوضع الليلي مفعلًا، نبدّل مؤقتًا للنهاري لأجل PDF
+    const wasDark = isDark;
+    if (wasDark) {
+      body.classList.remove('dark');
+      await new Promise(r => setTimeout(r, 150));
+    }
+
+    const options = {
+      margin: [6, 6, 6, 6],
+      filename: 'Mjd_Ali_AlRamadan_CV.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        scrollY: 0,
+        windowWidth: element.scrollWidth
+      },
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
+        orientation: 'portrait'
+      },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    try {
+      await html2pdf().set(options).from(element).save();
+
+      // استرجاع الوضع الليلي إن كان مفعّلًا
+      if (wasDark) {
+        body.classList.add('dark');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('حدث خطأ أثناء إنشاء PDF. جرّب استخدام زر الطباعة (Ctrl+P) كبديل.');
+      if (wasDark) body.classList.add('dark');
+    } finally {
+      // إعادة إظهار الأزرار
+      document.querySelectorAll('.floating-actions, .avatar-hint').forEach(el => {
+        el.style.display = '';
+      });
+      pdfBtn.textContent = '📥';
+      pdfBtn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
